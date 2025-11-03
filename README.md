@@ -1,7 +1,3 @@
-# ProyectoLP
-Proyecto de la materia de Lenguajes de Programación por Sebastian² en la carrera de Computación de la ESPOL.
-
-
 # Implementación de un Analizador Léxico, Sintáctico y Semántico para Ruby
 ## Proyecto de Lenguajes de Programación
 
