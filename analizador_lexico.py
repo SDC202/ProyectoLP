@@ -176,7 +176,7 @@ def t_GLOBAL_VARIABLE(t):
 
 def t_CONSTANT(t):
     r'[A-Z]\w*'
-    
+
     return t
 
 t_LPAREN    = r'\('
@@ -190,3 +190,29 @@ t_DOT       = r'\.'
 t_SEMICOLON = r';'
 
 # Termina aporte Sebastián De Castro
+
+# Empieza aporte Sebastián Manzanilla
+
+# Termina aporte Sebastián Manzanilla
+
+t_ignore = ' \t'
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+def t_error(t):
+    error_msg = f"Error Léxico: Carácter ilegal '{t.value[0]}' en la línea {t.lexer.lineno}\n"
+    print(error_msg, end='') 
+ 
+    if hasattr(lexer, 'log_file'):
+        lexer.log_file.write(error_msg)
+
+    t.lexer.skip(1)
+
+
+def t_COMMENT(t):
+    r'\#.*'
+    pass
+
+lexer = lex.lex()
