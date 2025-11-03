@@ -49,9 +49,11 @@ keywords = {
 }
 
 tokens_literales = (
-    'NUMBER',        # Para Enteros y Flotantes (ej: 123, 3.14)
-    'STRING',        # Para Cadenas (ej: "hola", 'mundo') 
-    'SYMBOL',        # Para Símbolos (ej: :mi_simbolo)
+    'INTEGER',
+    'FLOAT',
+    'STRING',
+    'SYMBOL',
+    'REGEXP',
 )
 
 tokens_identificadores = (
@@ -119,3 +121,72 @@ tokens = tokens_literales + \
          tokens_operadores + \
          tokens_delimitadores + \
          tuple(keywords.values())
+
+# Empieza aporte Sebastián De Castro
+
+def t_INTEGER(t):
+    r'\d+'
+    t.value = int(t.value)
+
+    return t
+
+def t_FLOAT(t):
+    r'\d+\.\d+'
+    t.value=float(t.value)
+
+    return t
+
+def t_STRING(t):
+    r' ( " (\\.|[^"\\])* " ) | ( \' (\\.|[^\'\\])* \' ) '
+    t.value = t.value[1:-1]
+    
+    return t
+
+def t_SYMBOL(t):
+    r':[a-zA-Z_]\w*'
+    t.value = t.value[1:] 
+    
+    return t
+
+def t_REGEXP(t):
+    r' / (\\.|[^/\\])* / '
+    
+    return t
+
+def t_IDENTIFIER(t):
+    r'[a-z_]\w*'
+    t.type = keywords.get(t.value, 'IDENTIFIER')
+
+    return t
+
+def t_INSTANCE_VARIABLE(t):
+    r'@[a-zA-Z_]\w*'
+
+    return t
+
+def t_CLASS_VARIABLE(t):
+    r'@@[a-zA-Z_]\w*'
+
+    return t
+
+def t_GLOBAL_VARIABLE(t):
+    r'\$[a-zA-Z_]\w*'
+
+    return t
+
+def t_CONSTANT(t):
+    r'[A-Z]\w*'
+    
+    return t
+
+t_LPAREN    = r'\('
+t_RPAREN    = r'\)'
+t_LBRACKET  = r'\['
+t_RBRACKET  = r'\]'
+t_LBRACE    = r'\{'
+t_RBRACE    = r'\}'
+t_COMMA     = r','
+t_DOT       = r'\.'
+t_SEMICOLON = r';'
+
+# Termina aporte Sebastián De Castro
