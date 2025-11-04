@@ -1,0 +1,87 @@
+--- Log de Análisis Léxico ---
+Usuario: ManzanillaSebastian
+Archivo: algoritmos_prueba/prueba_sDeCastro.rb
+Fecha: 03/11/2025 21:14:20
+------------------------------
+
+Eventos de Análisis (Tokens y Errores):
+Token: MODULE, Valor: 'module', Línea: 5
+Token: CONSTANT, Valor: 'MiModulo', Línea: 5
+Token: CLASS, Valor: 'class', Línea: 6
+Token: CONSTANT, Valor: 'MiClase', Línea: 6
+Token: CONSTANT, Valor: 'VERSION', Línea: 7
+Token: ASSIGN, Valor: '=', Línea: 7
+Token: INTEGER, Valor: '1', Línea: 7
+Token: DOT, Valor: '.', Línea: 7
+Token: INTEGER, Valor: '0', Línea: 7
+Token: END, Valor: 'end', Línea: 8
+Token: END, Valor: 'end', Línea: 9
+Token: IDENTIFIER, Valor: 'holaaa', Línea: 11
+Token: PLUS, Valor: '+', Línea: 11
+Token: PLUS, Valor: '+', Línea: 11
+Token: PLUS, Valor: '+', Línea: 11
+Token: PLUS, Valor: '+', Línea: 11
+Token: GLOBAL_VARIABLE, Valor: '$variable_global', Línea: 15
+Token: ASSIGN, Valor: '=', Línea: 15
+Token: INTEGER, Valor: '1', Línea: 15
+Token: CLASS_VARIABLE, Valor: '@@contador_clase', Línea: 16
+Token: ASSIGN, Valor: '=', Línea: 16
+Token: INTEGER, Valor: '0', Línea: 16
+Token: CLASS, Valor: 'class', Línea: 18
+Token: CONSTANT, Valor: 'ObjetoPrueba', Línea: 18
+Token: DEF, Valor: 'def', Línea: 19
+Token: IDENTIFIER, Valor: 'initialize', Línea: 19
+Token: LPAREN, Valor: '(', Línea: 19
+Token: IDENTIFIER, Valor: 'valor', Línea: 19
+Token: RPAREN, Valor: ')', Línea: 19
+Token: INSTANCE_VARIABLE, Valor: '@variable_instancia', Línea: 20
+Token: ASSIGN, Valor: '=', Línea: 20
+Token: IDENTIFIER, Valor: 'valor', Línea: 20
+Token: END, Valor: 'end', Línea: 21
+Token: END, Valor: 'end', Línea: 22
+Token: IDENTIFIER, Valor: 'objeto', Línea: 25
+Token: ASSIGN, Valor: '=', Línea: 25
+Token: CONSTANT, Valor: 'ObjetoPrueba', Línea: 25
+Token: DOT, Valor: '.', Línea: 25
+Token: IDENTIFIER, Valor: 'new', Línea: 25
+Token: LPAREN, Valor: '(', Línea: 25
+Token: INTEGER, Valor: '10', Línea: 25
+Token: RPAREN, Valor: ')', Línea: 25
+Token: IDENTIFIER, Valor: 'mi_array', Línea: 26
+Token: ASSIGN, Valor: '=', Línea: 26
+Token: LBRACKET, Valor: '[', Línea: 26
+Token: INTEGER, Valor: '1', Línea: 26
+Token: COMMA, Valor: ',', Línea: 26
+Token: INTEGER, Valor: '2', Línea: 26
+Token: COMMA, Valor: ',', Línea: 26
+Token: INTEGER, Valor: '3', Línea: 26
+Token: RBRACKET, Valor: ']', Línea: 26
+Token: IDENTIFIER, Valor: 'mi_hash', Línea: 29
+Token: ASSIGN, Valor: '=', Línea: 29
+Token: LBRACE, Valor: '{', Línea: 29
+Token: SYMBOL, Valor: 'simbolo_uno', Línea: 30
+Token: HASH_ROCKET, Valor: '=>', Línea: 30
+Token: STRING, Valor: 'String con comillas dobles', Línea: 30
+Token: COMMA, Valor: ',', Línea: 30
+Token: STRING, Valor: 'llave_string', Línea: 31
+Token: HASH_ROCKET, Valor: '=>', Línea: 31
+Token: STRING, Valor: 'String con \"escapes\"', Línea: 31
+Token: RBRACE, Valor: '}', Línea: 32
+Token: IDENTIFIER, Valor: 'donde', Línea: 34
+Error Léxico: Carácter ilegal 'ñ' en la línea 34
+Token: IDENTIFIER, Valor: 'o', Línea: 34
+Token: IDENTIFIER, Valor: 'estoy', Línea: 34
+Token: IDENTIFIER, Valor: 'expresion', Línea: 38
+Token: ASSIGN, Valor: '=', Línea: 38
+Token: REGEXP, Valor: '/[a-z_0-9]+/', Línea: 38
+Token: SEMICOLON, Valor: ';', Línea: 38
+Token: IF, Valor: 'if', Línea: 41
+Token: INTEGER, Valor: '5', Línea: 41
+Token: GREATER, Valor: '>', Línea: 41
+Token: INTEGER, Valor: '3', Línea: 41
+Token: IDENTIFIER, Valor: 'puts', Línea: 42
+Token: STRING, Valor: 'Prueba de identificador local', Línea: 42
+Token: ELSE, Valor: 'else', Línea: 43
+Token: END, Valor: 'end', Línea: 45
+Token: IDENTIFIER, Valor: 'error_lexico', Línea: 49
+Error Léxico: Carácter ilegal '~' en la línea 49
