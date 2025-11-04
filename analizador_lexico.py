@@ -70,7 +70,7 @@ tokens_operadores = (
     'MINUS',         # -
     'TIMES',         # *
     'DIVIDE',        # /
-    'MODULO',        # %
+    'MODULE_OP',        # %
     'POWER',         # **
 
     # Asignación 
@@ -122,7 +122,7 @@ tokens = tokens_literales + \
          tokens_delimitadores + \
          tuple(keywords.values())
 
-# Empieza aporte Sebastián De Castro
+# Empieza aporte Sebastián De Castro (tokens literales, identificadores y delimitadores)
 
 def t_INTEGER(t):
     r'\d+'
@@ -149,7 +149,7 @@ def t_SYMBOL(t):
     return t
 
 def t_REGEXP(t):
-    r' / (\\.|[^/\\])* / '
+    r'/(\\.|[^/\\\n])*/'
     
     return t
 
@@ -186,12 +186,52 @@ t_RBRACKET  = r'\]'
 t_LBRACE    = r'\{'
 t_RBRACE    = r'\}'
 t_COMMA     = r','
-t_DOT       = r'\.'
+# t_DOT       = r'\.'
 t_SEMICOLON = r';'
 
 # Termina aporte Sebastián De Castro
 
-# Empieza aporte Sebastián Manzanilla
+# Empieza aporte Sebastián Manzanilla (tokens operadores)
+
+# Tokens de 3 caracteres
+t_POWER_ASSIGN = r'\*\*='
+t_RANGE_EXCLUSIVE = r'\.\.\.'
+t_CASE_EQUAL = r'==='
+t_SPACESHIP = r'<=>'
+
+# Tokens de 2 caracteres
+t_POWER = r'\*\*'
+t_RANGE_INCLUSIVE = r'\.\.'
+t_SCOPE = r'::'
+t_HASH_ROCKET = r'=>'
+
+t_PLUS_ASSIGN = r'\+='
+t_MINUS_ASSIGN = r'-='
+t_TIMES_ASSIGN = r'\*='
+t_DIVIDE_ASSIGN = r'/='
+t_MOD_ASSIGN = r'%='
+
+t_GREATER_EQUAL   = r'>='
+t_LESS_EQUAL      = r'<='
+t_EQUAL           = r'=='
+t_NOT_EQUAL       = r'!='
+
+t_LOGICAL_AND     = r'&&'
+t_LOGICAL_OR      = r'\|\|'
+
+# Tokens de 1 caracter
+t_ASSIGN = r'='
+t_PLUS = r'\+'
+t_MINUS = r'-'
+t_TIMES = r'\*'
+t_DIVIDE = r'/'
+t_MODULE_OP = r'%'
+t_GREATER = r'>'
+t_LESS = r'<'
+t_LOGICAL_NOT = r'!'
+
+#Definiciones movidas por prioridad
+t_DOT = r'\.'
 
 # Termina aporte Sebastián Manzanilla
 
