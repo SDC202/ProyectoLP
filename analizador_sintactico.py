@@ -64,6 +64,13 @@ def p_expression_variables(p):
     '''
     p[0] = p[1]
 
+def p_expression_range(p):
+    '''
+    expression : expression RANGE_INCLUSIVE expression
+               | expression RANGE_EXCLUSIVE expression
+    '''
+    pass
+
 def p_expression_array_access(p):
     'expression : IDENTIFIER LBRACKET expression RBRACKET'
 
@@ -132,6 +139,14 @@ def p_class_definition(p):
     # Regla para: class MiClase ... end
     # Regla para: class Hija < Padre ... end
 
+def p_params(p):
+    '''
+    params : params COMMA IDENTIFIER
+           | IDENTIFIER
+    '''
+
+    # Regla para definir los parametros
+
 # Definición de Funciones
 def p_function_definition(p):
     '''
@@ -144,13 +159,6 @@ def p_function_definition(p):
     # Regla para: def mi_func() ... end
     # Regla para: def mi_func ... end (sin paréntesis)
 
-def p_params(p):
-    '''
-    params : params COMMA IDENTIFIER
-           | IDENTIFIER
-    '''
-
-    # Regla para definir los parametros
 
 # Estructura de Datos: Hash
 def p_expression_hash(p):

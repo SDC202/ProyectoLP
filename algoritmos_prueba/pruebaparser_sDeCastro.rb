@@ -4,9 +4,14 @@ class MiClase
   @@contador = 0
   $global = "mundo"
   MI_CONSTANTE = 3.14
+  $boom = -45
   
   # Prueba de Definición de Funciones
   def func_con_params(a, b)
+    @instancia = a + b
+  end
+
+  def func_con_params(a)
     @instancia = a + b
   end
 

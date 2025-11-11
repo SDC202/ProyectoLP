@@ -45,7 +45,7 @@ El analizador está construido en **Python 3** y utiliza la biblioteca **PLY (Py
 ├── algoritmos_prueba/
 │   ├── pruebalexer_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
 │   ├── pruebalexer_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
-    ├── pruebaparser_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
+│   ├── pruebaparser_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
 │   └── pruebaparser_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
 ├── logs/
 │   └── (Aquí se guardan los logs generados en formato .txt)

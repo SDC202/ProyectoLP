@@ -127,15 +127,15 @@ tokens = tokens_literales + \
 
 # Empieza aporte Sebastián De Castro (tokens literales, identificadores y delimitadores)
 
-def t_INTEGER(t):
-    r'\d+'
-    t.value = int(t.value)
-
-    return t
-
 def t_FLOAT(t):
     r'\d+\.\d+'
     t.value=float(t.value)
+
+    return t
+
+def t_INTEGER(t):
+    r'\d+'
+    t.value = int(t.value)
 
     return t
 
