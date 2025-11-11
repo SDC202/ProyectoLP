@@ -117,6 +117,7 @@ tokens_delimitadores = (
     'COMMA',         # ,
     'DOT',           # .
     'SEMICOLON',     # ;
+    'NEWLINE',       # \n
 )
 
 tokens = tokens_literales + \
@@ -240,9 +241,10 @@ t_DOT = r'\.'
 
 t_ignore = ' \t'
 
-def t_newline(t):
+def t_NEWLINE(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+    # return t
 
 
 def t_error(t):

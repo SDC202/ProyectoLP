@@ -1,0 +1,7 @@
+--- Log de Análisis Sintáctico ---
+Usuario: ManzanillaSebastian
+Archivo: algoritmos_prueba/pruebaparser_sManzanilla.rb
+Fecha: 10/11/2025 21:56:52
+------------------------------
+
+Análisis Sintáctico Exitoso: No se encontraron errores.

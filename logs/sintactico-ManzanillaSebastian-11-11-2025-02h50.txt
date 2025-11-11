@@ -1,0 +1,10 @@
+--- Log de Análisis Sintáctico ---
+Usuario: ManzanillaSebastian
+Archivo: algoritmos_prueba/pruebaparser_sManzanilla.rb
+Fecha: 10/11/2025 22:50:14
+------------------------------
+
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '<' (Tipo: LESS) en la línea 17
+Error de Sintaxis: Token inesperado '>' (Tipo: GREATER) en la línea 21
+Error de Sintaxis: Token inesperado '<=>' (Tipo: SPACESHIP) en la línea 34

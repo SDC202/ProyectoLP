@@ -1,0 +1,10 @@
+--- Log de Análisis Sintáctico ---
+Usuario: ManzanillaSebastian
+Archivo: algoritmos_prueba/pruebaparser_sManzanilla.rb
+Fecha: 10/11/2025 22:22:39
+------------------------------
+
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '=' (Tipo: ASSIGN) en la línea 62
+Error de Sintaxis: Token inesperado '=' (Tipo: ASSIGN) en la línea 66
+Error de Sintaxis: Token inesperado '=' (Tipo: ASSIGN) en la línea 70

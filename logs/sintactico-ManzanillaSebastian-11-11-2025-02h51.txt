@@ -1,0 +1,8 @@
+--- Log de Análisis Sintáctico ---
+Usuario: ManzanillaSebastian
+Archivo: algoritmos_prueba/pruebaparser_sManzanilla.rb
+Fecha: 10/11/2025 22:51:09
+------------------------------
+
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '<=>' (Tipo: SPACESHIP) en la línea 34

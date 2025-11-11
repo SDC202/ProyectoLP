@@ -21,11 +21,14 @@ def p_program(p):
 
 def p_statements(p):
     '''
-    statements : statements statement
+    statements : statements NEWLINE statement
+               | statements statement
                | statement
     '''
 
-    if len(p) == 3:
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    elif len(p) == 3:
         p[0] = p[1] + [p[2]] 
     else:
         p[0] = [p[1]] 
@@ -97,6 +100,7 @@ def p_error(p):
 def p_assignment(p):
     '''
     assignment : IDENTIFIER ASSIGN expression
+               | IDENTIFIER ASSIGN condition
                | INSTANCE_VARIABLE ASSIGN expression
                | CLASS_VARIABLE ASSIGN expression
                | GLOBAL_VARIABLE ASSIGN expression
@@ -141,18 +145,25 @@ def p_class_definition(p):
 
 def p_params(p):
     '''
-    params : params COMMA IDENTIFIER
+    params : IDENTIFIER COMMA params
            | IDENTIFIER
     '''
 
     # Regla para definir los parametros
 
+def p_return(p):
+    '''
+    return : RETURN expression
+           | RETURN
+           |
+    '''
+
 # Definición de Funciones
 def p_function_definition(p):
     '''
-    function_definition : DEF IDENTIFIER LPAREN params RPAREN statements END
-                        | DEF IDENTIFIER LPAREN RPAREN statements END
-                        | DEF IDENTIFIER statements END
+    function_definition : DEF IDENTIFIER LPAREN params RPAREN statements return END
+                        | DEF IDENTIFIER LPAREN RPAREN statements return END
+                        | DEF IDENTIFIER statements return END
     '''
 
     # Regla para: def mi_func(a, b) ... end
