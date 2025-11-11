@@ -193,7 +193,85 @@ def p_control_statement_for(p):
 
 # Empieza aporte Sebastián Manzanilla
 
+# 1. Estructura de Control: if-elsif-else
+def p_control_statement_if(p):
+    '''
+    control_statement : IF condition statements END
+                      | IF condition statements ELSE statements END
+                      | IF condition statements elsif_clauses END
+                      | IF condition statements elsif_clauses ELSE statements END
+    '''
 
+def p_elsif_clauses(p):
+    '''
+    elsif_clauses : elsif_clauses ELSIF condition statements
+                  | ELSIF condition statements
+    '''
+    
+# 2. Estructura de Control: while
+def p_control_statement_while(p):
+    'control_statement : WHILE condition statements END'
+    # Regla para: while x < 5 ... end
+
+# 3. Condiciones Lógicas
+def p_condition(p):
+    '''
+    condition : expression EQUAL expression
+              | expression NOT_EQUAL expression
+              | expression GREATER expression
+              | expression LESS expression
+              | expression GREATER_EQUAL expression
+              | expression LESS_EQUAL expression
+              | expression SPACESHIP expression
+              | expression CASE_EQUAL expression
+              | condition LOGICAL_AND condition
+              | condition AND condition
+              | condition LOGICAL_OR condition
+              | condition OR condition
+              | LOGICAL_NOT condition
+              | NOT condition
+              | expression
+    '''
+    # Permite: x == 5, x > 2, !(x > 2), x > 2 && y < 1, etc.
+
+# 4. Estructura de Datos: Array
+def p_expression_array(p):
+    '''
+    expression : LBRACKET array_elements RBRACKET
+               | LBRACKET RBRACKET
+    '''
+    # Regla para: [1, "dos", 3]
+
+def p_array_elements(p):
+    '''
+    array_elements : array_elements COMMA expression
+                   | expression
+    '''
+
+# 5. Impresión
+def p_io_statement_puts(p):
+    '''
+    io_statement : PUTS expression
+                 | PUTS
+    '''
+    # Regla para: puts "Hola"
+    # Regla para: puts (sin argumentos)
+
+# 6. Tipo de Función: Llamada a Función
+def p_expression_function_call(p):
+    '''
+    expression : IDENTIFIER LPAREN arguments RPAREN
+               | IDENTIFIER LPAREN RPAREN
+               | IDENTIFIER arguments
+    '''
+    # Regla para: mi_funcion(a, b)
+    # Regla para: mi_funcion a, b (sin paréntesis)
+
+def p_arguments(p):
+    '''
+    arguments : arguments COMMA expression
+              | expression
+    '''
 
 # Terminan aportes Sebastian Manzanilla
 
