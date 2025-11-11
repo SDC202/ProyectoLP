@@ -40,11 +40,13 @@ El analizador está construido en **Python 3** y utiliza la biblioteca **PLY (Py
 ├── analizador_sintactico.py # Definición de la gramática (Avance 2)
 ├── analizador_semantico.py  # Reglas semánticas (Avance 3)
 ├── gui.py                  # Archivo principal para ejecutar la interfaz gráfica
-├── probar_lexer.py         # Script para probar el lexer (Avance 1)
+├── probar_lexer.py         # Script para generar logs léxicos
 ├── probar_sintactico.py # Script para probar el parser (Avance 2)
 ├── algoritmos_prueba/
-│   ├── prueba_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
-│   └── prueba_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
+│   ├── pruebalexer_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
+│   ├── pruebalexer_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
+    ├── pruebaparser_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
+│   └── pruebaparser_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
 ├── logs/
 │   └── (Aquí se guardan los logs generados en formato .txt)
 └── README.md               # Documentación del repositorio

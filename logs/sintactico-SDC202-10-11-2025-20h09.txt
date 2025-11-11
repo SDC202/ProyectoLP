@@ -1,0 +1,11 @@
+--- Log de Análisis Sintáctico ---
+Usuario: SDC202
+Archivo: algoritmos_prueba/pruebaparser_sDeCastro.rb
+Fecha: 10/11/2025 20:09:07
+------------------------------
+
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '14' (Tipo: INTEGER) en la línea 6
+Error de Sintaxis: Token inesperado 'end' (Tipo: END) en la línea 22
+Error de Sintaxis: Token inesperado '..' (Tipo: RANGE_INCLUSIVE) en la línea 28
+Error de Sintaxis: Token inesperado 'end' (Tipo: END) en la línea 32
