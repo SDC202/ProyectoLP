@@ -40,7 +40,8 @@ El analizador está construido en **Python 3** y utiliza la biblioteca **PLY (Py
 ├── analizador_sintactico.py # Definición de la gramática (Avance 2)
 ├── analizador_semantico.py  # Reglas semánticas (Avance 3)
 ├── gui.py                  # Archivo principal para ejecutar la interfaz gráfica
-├── probar_lexer.py         # Script para generar logs léxicos
+├── probar_lexer.py         # Script para probar el lexer (Avance 1)
+├── probar_sintactico.py # Script para probar el parser (Avance 2)
 ├── algoritmos_prueba/
 │   ├── prueba_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
 │   └── prueba_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
@@ -55,7 +56,7 @@ El analizador está construido en **Python 3** y utiliza la biblioteca **PLY (Py
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [URL-DE-TU-REPOSITORIO]
+    git clone https://github.com/SDC202/ProyectoLP.git
     cd ProyectoLP
     ```
 
@@ -72,8 +73,12 @@ El analizador está construido en **Python 3** y utiliza la biblioteca **PLY (Py
     python gui.py
     ```
 
-4.  **Probar el Lexer (Avance 1):**
-    Para generar un log de prueba desde la terminal:
-    ```bash
-    python probar_lexer.py algoritmos_prueba/tu_archivo.rb tu_usuario_git
-    ```
+4.  **Probar los Avances (Terminal):**
+    * **Avance 1 (Lexer):**
+        ```bash
+        python probar_lexer.py algoritmos_prueba/tu_archivo.rb tu_usuario_git
+        ```
+    * **Avance 2 (Parser):**
+        ```bash
+        python probar_sintactico.py algoritmos_prueba/tu_archivo.rb tu_usuario_git
+        ```

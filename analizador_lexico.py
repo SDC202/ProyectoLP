@@ -24,6 +24,7 @@ keywords = {
     'next': 'NEXT',
     'return': 'RETURN',
     'yield': 'YIELD',
+    'then': 'THEN',
 
     # Bloques y excepciones
     'do': 'DO',
@@ -46,6 +47,8 @@ keywords = {
     'alias': 'ALIAS',
     'self': 'SELF',
     'super': 'SUPER',
+    'puts': 'PUTS',
+    'gets': 'GETS',
 }
 
 tokens_literales = (
@@ -241,13 +244,10 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-def t_error(t):
-    error_msg = f"Error Léxico: Carácter ilegal '{t.value[0]}' en la línea {t.lexer.lineno}\n"
-    print(error_msg, end='') 
- 
-    if hasattr(lexer, 'log_file'):
-        lexer.log_file.write(error_msg)
 
+def t_error(t):
+    error_msg = f"Error Léxico: Carácter ilegal '{t.value[0]}' en la línea {t.lexer.lineno}"
+    lexer.errors.append(error_msg)
     t.lexer.skip(1)
 
 
@@ -256,3 +256,5 @@ def t_COMMENT(t):
     pass
 
 lexer = lex.lex()
+
+lexer.errors = []
