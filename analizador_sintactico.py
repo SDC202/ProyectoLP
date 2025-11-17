@@ -1,6 +1,42 @@
 import ply.yacc as yacc
 from analizador_lexico import *
 
+class SymbolTable:
+    def __init__(self):
+        self.scope_stack = []
+        self.enter_scope()
+        self.errors = []
+
+    def enter_scope(self, is_loop=False):
+        new_scope = {'__is_loop__': is_loop}
+        self.scope_stack.append(new_scope)
+
+    def exit_scope(self):
+        if len(self.scope_stack) > 1:
+            self.scope_stack.pop()
+        else:
+            self.report_error("Error: No se puede salir del ámbito global")
+
+    def declare(self, name, symbol_type, data_type=None, param_count=None, lineno=0):
+        scope = self.scope_stack[-1]
+        
+        if name in scope:
+            self.report_error(f"Variable '{name}' ya declarada en este ámbito.", lineno)
+            
+        scope[name] = {
+            'symbol_type': symbol_type,
+            'data_type': data_type,
+            'param_count': param_count
+        }
+
+    def lookup(self, name):
+        for scope in reversed(self.scope_stack):
+            if name in scope:
+                return scope[name]
+        return None
+
+symbol_table = SymbolTable()
+
 precedence = (
     ('left', 'OR', 'AND'),
     ('left', 'LOGICAL_OR'),
