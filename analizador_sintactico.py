@@ -34,6 +34,42 @@ class SymbolTable:
             if name in scope:
                 return scope[name]
         return None
+    
+    def check_loop(self):
+        for scope in reversed(self.scope_stack):
+            if scope.get('__is_loop__', False):
+                return True
+        return False
+
+    def report_error(self, message, lineno=0):
+        error_msg = f"Error Semántico (Línea {lineno}): {message}"
+        self.errors.append(error_msg)
+        print(error_msg)
+
+    def check_types(self, op, type1, type2, lineno=0):
+        numeric_types = ['INTEGER', 'FLOAT']
+        
+        if op in ['+', '-', '*', '/', '%', '**']:
+            if type1 in numeric_types and type2 in numeric_types:
+                return 'FLOAT' if 'FLOAT' in (type1, type2) else 'INTEGER'
+            
+            if op == '+' and type1 == 'STRING' and type2 == 'STRING':
+                return 'STRING'
+            
+            self.report_error(f"Operador '{op}' no soportado entre {type1} y {type2}.", lineno)
+            return 'ERROR_TYPE'
+
+        if op in ['>', '<', '==', '!=', '>=', '<=']:
+            if (type1 == type2) or (type1 in numeric_types and type2 in numeric_types):
+                return 'BOOLEAN'
+            
+            self.report_error(f"Comparación '{op}' no soportada entre {type1} y {type2}.", lineno)
+            return 'ERROR_TYPE'
+        
+        if op in ['and', 'or', '&&', '||']:
+            return 'BOOLEAN'
+
+        return 'UNKNOWN'
 
 symbol_table = SymbolTable()
 
@@ -49,11 +85,27 @@ precedence = (
     ('right', 'UMINUS'),
 )
 
+def p_empty(p):
+    'empty :'
+    pass
+
+def p_enter_scope(p):
+    'enter_scope : empty'
+    symbol_table.enter_scope()
+
+def p_enter_loop_scope(p):
+    'enter_loop_scope : empty'
+    symbol_table.enter_scope(is_loop=True)
+
+def p_exit_scope(p):
+    'exit_scope : empty'
+    symbol_table.exit_scope()
+
 def p_program(p):
     '''
     program : statements
     '''
-    p[0] = p[1]
+    pass
 
 def p_statements(p):
     '''
@@ -61,13 +113,7 @@ def p_statements(p):
                | statements statement
                | statement
     '''
-
-    if len(p) == 4:
-        p[0] = p[1] + [p[3]]
-    elif len(p) == 3:
-        p[0] = p[1] + [p[2]] 
-    else:
-        p[0] = [p[1]] 
+    pass
 
 def p_statement(p):
     '''
@@ -77,6 +123,8 @@ def p_statement(p):
               | control_statement
               | function_definition
               | class_definition
+              | BREAK
+              | NEXT
     '''
     p[0] = p[1]
 
@@ -184,6 +232,10 @@ def p_params(p):
     params : IDENTIFIER COMMA params
            | IDENTIFIER
     '''
+    if len(p) == 4:
+        p[0] = [p[1]] + p[3]
+    else:
+        p[0] = [p[1]]
 
     # Regla para definir los parametros
 
@@ -191,20 +243,35 @@ def p_return(p):
     '''
     return : RETURN expression
            | RETURN
-           |
+           | empty
     '''
+    pass
 
 # Definición de Funciones
 def p_function_definition(p):
     '''
-    function_definition : DEF IDENTIFIER LPAREN params RPAREN statements return END
-                        | DEF IDENTIFIER LPAREN RPAREN statements return END
-                        | DEF IDENTIFIER statements return END
+    function_definition : DEF IDENTIFIER func_header statements return exit_scope END
     '''
+    pass
 
-    # Regla para: def mi_func(a, b) ... end
-    # Regla para: def mi_func() ... end
-    # Regla para: def mi_func ... end (sin paréntesis)
+def p_func_header(p):
+    '''
+    func_header : LPAREN params RPAREN 
+                | LPAREN RPAREN
+                | 
+    '''
+    func_name = p[-1]
+    param_list = []
+    
+    if len(p) == 4:
+        param_list = p[2]
+    
+    symbol_table.declare(func_name, 'FUNCTION', param_count=len(param_list), lineno=p.lineno(1))
+    
+    symbol_table.enter_scope()
+    
+    for param in param_list:
+        symbol_table.declare(param, 'VARIABLE', data_type='UNKNOWN', lineno=p.lineno(1))
 
 
 # Estructura de Datos: Hash
