@@ -250,15 +250,6 @@ def p_class_definition(p):
     class_name = p[2]
     symbol_table.declare(class_name, 'CLASS', lineno=p.lineno(1))
 
-def p_error(p):
-    if p:
-        error_msg = f"Error de Sintaxis: Token inesperado '{p.value}' (Tipo: {p.type}) en la línea {p.lineno}"
-    else:
-        error_msg = "Error de Sintaxis: Final de archivo inesperado (EOF)"
-    
-    print(error_msg)
-    parser.errors.append(error_msg)
-
 def p_params(p):
     '''
     params : IDENTIFIER COMMA params
@@ -384,8 +375,10 @@ def p_io_statement_puts(p):
 # Estructura de Control: for
 def p_control_statement_for(p):
     '''
-    control_statement : FOR IDENTIFIER IN expression statements END
+    control_statement : FOR IDENTIFIER IN expression enter_loop_scope statements exit_scope END
     '''
+    iterator_var = p[2]
+    symbol_table.scope_stack[-1][iterator_var] = {'symbol_type': 'VARIABLE', 'data_type': 'UNKNOWN'}
     # Regla para: for i in (1..5) ... end
 
 # 1. Estructura de Control: if-elsif-else
@@ -405,7 +398,7 @@ def p_elsif_clauses(p):
     
 # 2. Estructura de Control: while
 def p_control_statement_while(p):
-    'control_statement : WHILE condition statements END'
+    'control_statement : WHILE condition enter_loop_scope statements exit_scope END'
     # Regla para: while x < 5 ... end
 
 # 6. Tipo de Función: Llamada a Función
@@ -415,6 +408,28 @@ def p_expression_function_call(p):
                | IDENTIFIER LPAREN RPAREN
                | IDENTIFIER arguments
     '''
+    func_name = p[1]
+    arg_list = []
+    
+    if len(p) == 5:
+        arg_list = p[3]
+    elif len(p) == 3:
+        arg_list = p[2]
+    
+    num_args = len(arg_list)
+    symbol = symbol_table.lookup(func_name)
+    
+    if symbol is None:
+        symbol_table.report_error(f"Función '{func_name}' no definida.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif symbol['symbol_type'] != 'FUNCTION':
+        symbol_table.report_error(f"'{func_name}' no es una función, es {symbol['symbol_type']}.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif symbol['param_count'] != num_args:
+        symbol_table.report_error(f"Función '{func_name}' esperaba {symbol['param_count']} argumentos, pero recibió {num_args}.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    else:
+        p[0] = 'UNKNOWN'
     # Regla para: mi_funcion(a, b)
     # Regla para: mi_funcion a, b (sin paréntesis)
 
@@ -423,8 +438,31 @@ def p_arguments(p):
     arguments : arguments COMMA expression
               | expression
     '''
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    else:
+        p[0] = [p[1]]
 
 # Terminan aportes Sebastian Manzanilla
+
+def p_statement_break(p):
+    'statement : BREAK'
+    if not symbol_table.check_loop():
+        symbol_table.report_error("'break' no puede usarse fuera de un bucle.", p.lineno(1))
+
+def p_statement_next(p):
+    'statement : NEXT'
+    if not symbol_table.check_loop():
+        symbol_table.report_error("'next' no puede usarse fuera de un bucle.", p.lineno(1))
+
+def p_error(p):
+    if p:
+        error_msg = f"Error de Sintaxis: Token inesperado '{p.value}' (Tipo: {p.type}) en la línea {p.lineno(1)}"
+    else:
+        error_msg = "Error de Sintaxis: Final de archivo inesperado (EOF)"
+    
+    print(error_msg)
+    parser.errors.append(error_msg)
 
 
 parser = yacc.yacc()
