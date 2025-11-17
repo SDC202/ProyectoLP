@@ -37,16 +37,18 @@ El analizador está construido en **Python 3** y utiliza la biblioteca **PLY (Py
 ```
 /ProyectoLP/
 ├── analizador_lexico.py    # Definición de tokens y reglas léxicas (Avance 1)
-├── analizador_sintactico.py # Definición de la gramática (Avance 2)
-├── analizador_semantico.py  # Reglas semánticas (Avance 3)
+├── analizador_sintactico.py # Definición de la gramática (Avance 2) y reglas semánticas (Avance 3)
 ├── gui.py                  # Archivo principal para ejecutar la interfaz gráfica
 ├── probar_lexer.py         # Script para generar logs léxicos
-├── probar_sintactico.py # Script para probar el parser (Avance 2)
+├── probar_sintactico.py    # Script para probar el parser (Avance 2)
+├── probar_semantico.py    # Script para probar el parser (Avance 3)
 ├── algoritmos_prueba/
 │   ├── pruebalexer_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
 │   ├── pruebalexer_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
 │   ├── pruebaparser_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
-│   └── pruebaparser_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
+│   ├── pruebaparser_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
+│   ├── pruebasemantico_sManzanilla.rb # Algoritmo de prueba para Sebastián M.
+│   └── pruebasemantico_sDeCastro.rb   # Algoritmo de prueba para Sebastián D. C.
 ├── logs/
 │   └── (Aquí se guardan los logs generados en formato .txt)
 └── README.md               # Documentación del repositorio
@@ -83,4 +85,8 @@ El analizador está construido en **Python 3** y utiliza la biblioteca **PLY (Py
     * **Avance 2 (Parser):**
         ```bash
         python probar_sintactico.py algoritmos_prueba/tu_archivo.rb tu_usuario_git
+        ```
+    * **Avance 3 (Parser Semantico):**
+        ```bash
+        python probar_semantico.py algoritmos_prueba/tu_archivo.rb tu_usuario_git
         ```
