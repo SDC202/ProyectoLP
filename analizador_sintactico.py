@@ -85,6 +85,8 @@ precedence = (
     ('right', 'UMINUS'),
 )
 
+start = 'program'
+
 def p_empty(p):
     'empty :'
     pass
@@ -103,15 +105,37 @@ def p_exit_scope(p):
 
 def p_program(p):
     '''
-    program : statements
+    program : optional_newlines statements optional_newlines
     '''
-    pass
+    p[0] = p[2]
 
 def p_statements(p):
     '''
-    statements : statements NEWLINE statement
-               | statements statement
+    statements : statements statement_separator statement
                | statement
+               | empty
+    '''
+
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    elif len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = []
+
+def p_statement_separator(p):
+    '''
+    statement_separator : NEWLINE
+                        | SEMICOLON
+                        | statement_separator NEWLINE
+                        | statement_separator SEMICOLON
+    '''
+    pass
+
+def p_optional_newlines(p):
+    '''
+    optional_newlines : statement_separator
+                      | empty
     '''
     pass
 
@@ -123,8 +147,7 @@ def p_statement(p):
               | control_statement
               | function_definition
               | class_definition
-              | BREAK
-              | NEXT
+              | return_statement
     '''
     p[0] = p[1]
 
@@ -197,7 +220,6 @@ def p_expression_dot_call(p):
 def p_assignment(p):
     '''
     assignment : IDENTIFIER ASSIGN expression
-               | IDENTIFIER ASSIGN condition
                | INSTANCE_VARIABLE ASSIGN expression
                | CLASS_VARIABLE ASSIGN expression
                | GLOBAL_VARIABLE ASSIGN expression
@@ -244,15 +266,15 @@ def p_expression_unary(p):
 
 def p_class_definition(p):
     '''
-    class_definition : CLASS CONSTANT enter_scope statements exit_scope END
-                     | CLASS CONSTANT LESS CONSTANT enter_scope statements exit_scope END
+    class_definition : CLASS CONSTANT enter_scope statements optional_newlines exit_scope END
+                     | CLASS CONSTANT LESS CONSTANT enter_scope statements optional_newlines exit_scope END
     '''
     class_name = p[2]
     symbol_table.declare(class_name, 'CLASS', lineno=p.lineno(1))
 
-def p_params(p):
+def p_param_list(p):
     '''
-    params : IDENTIFIER COMMA params
+    param_list : IDENTIFIER COMMA param_list
            | IDENTIFIER
     '''
     if len(p) == 4:
@@ -262,39 +284,44 @@ def p_params(p):
 
     # Regla para definir los parametros
 
-def p_return(p):
+def p_return_statement(p):
     '''
-    return : RETURN expression
-           | RETURN
-           | empty
+    return_statement : RETURN expression
+                   | RETURN
     '''
     pass
 
 # Definición de Funciones
 def p_function_definition(p):
     '''
-    function_definition : DEF IDENTIFIER func_header statements return exit_scope END
+    function_definition : DEF func_name_hook func_header statements optional_newlines exit_scope END
     '''
     pass
 
+def p_func_name_hook(p):
+    'func_name_hook : IDENTIFIER'
+    p[0] = p[1]
+
 def p_func_header(p):
     '''
-    func_header : LPAREN params RPAREN 
+    func_header : LPAREN param_list RPAREN 
                 | LPAREN RPAREN
-                | 
+                | empty
     '''
-    func_name = p[-1]
+    func_name = p[-1] 
     param_list = []
     
     if len(p) == 4:
         param_list = p[2]
     
-    symbol_table.declare(func_name, 'FUNCTION', param_count=len(param_list), lineno=p.lineno(1))
+    symbol_table.declare(func_name, 'FUNCTION', param_count=len(param_list), lineno=p.lineno(0))
     
     symbol_table.enter_scope()
     
     for param in param_list:
-        symbol_table.declare(param, 'VARIABLE', data_type='UNKNOWN', lineno=p.lineno(1))
+        symbol_table.declare(param, 'VARIABLE', data_type='UNKNOWN', lineno=p.lineno(0))
+    
+    p[0] = param_list
 
 def p_expression_hash(p):
     '''
@@ -375,30 +402,39 @@ def p_io_statement_puts(p):
 # Estructura de Control: for
 def p_control_statement_for(p):
     '''
-    control_statement : FOR IDENTIFIER IN expression enter_loop_scope statements exit_scope END
+    control_statement : FOR for_setup statements optional_newlines exit_scope END
     '''
-    iterator_var = p[2]
-    symbol_table.scope_stack[-1][iterator_var] = {'symbol_type': 'VARIABLE', 'data_type': 'UNKNOWN'}
-    # Regla para: for i in (1..5) ... end
+    pass
+
+def p_for_setup(p):
+    '''
+    for_setup : IDENTIFIER IN expression enter_loop_scope
+    '''
+    iterator_var = p[1]
+
+    symbol_table.declare(iterator_var, 'VARIABLE', data_type='UNKNOWN', lineno=p.lineno(1))
+    
+    pass
 
 # 1. Estructura de Control: if-elsif-else
 def p_control_statement_if(p):
     '''
-    control_statement : IF condition statements END
-                      | IF condition statements ELSE statements END
-                      | IF condition statements elsif_clauses END
-                      | IF condition statements elsif_clauses ELSE statements END
+    control_statement : IF condition enter_scope statements optional_newlines exit_scope END
+                      | IF condition enter_scope statements optional_newlines exit_scope ELSE enter_scope statements optional_newlines exit_scope END
+                      | IF condition enter_scope statements elsif_clauses optional_newlines exit_scope END
+                      | IF condition enter_scope statements elsif_clauses ELSE enter_scope statements optional_newlines exit_scope END
     '''
+    pass
 
 def p_elsif_clauses(p):
     '''
-    elsif_clauses : elsif_clauses ELSIF condition statements
-                  | ELSIF condition statements
+    elsif_clauses : elsif_clauses ELSIF condition statements optional_newlines
+                  | ELSIF condition statements optional_newlines
     '''
     
 # 2. Estructura de Control: while
 def p_control_statement_while(p):
-    'control_statement : WHILE condition enter_loop_scope statements exit_scope END'
+    'control_statement : WHILE condition enter_loop_scope statements optional_newlines exit_scope END'
     # Regla para: while x < 5 ... end
 
 # 6. Tipo de Función: Llamada a Función
@@ -457,7 +493,7 @@ def p_statement_next(p):
 
 def p_error(p):
     if p:
-        error_msg = f"Error de Sintaxis: Token inesperado '{p.value}' (Tipo: {p.type}) en la línea {p.lineno(1)}"
+        error_msg = f"Error de Sintaxis: Token inesperado '{p.value}' (Tipo: {p.type}) en la línea {p.lineno}"
     else:
         error_msg = "Error de Sintaxis: Final de archivo inesperado (EOF)"
     

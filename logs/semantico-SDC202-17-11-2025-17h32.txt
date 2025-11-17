@@ -1,0 +1,14 @@
+--- Log de Análisis Semántico ---
+Usuario: SDC202
+Archivo: algoritmos_prueba/pruebasemantico_sDeCastro.rb
+Fecha: 17/11/2025 17:32:19
+------------------------------
+
+Errores Semánticos Encontrados:
+Error Semántico (Línea 7): Operador '+' no soportado entre INTEGER y STRING.
+Error Semántico (Línea 11): Operador '+' no soportado entre UNKNOWN y UNKNOWN.
+Error Semántico (Línea 15): Función 'sumar_numeros' esperaba 2 argumentos, pero recibió 1.
+Error Semántico (Línea 19): 'break' no puede usarse fuera de un bucle.
+Error Semántico (Línea 27): Variable o identificador 'variable_local' no definido.
+Error Semántico (Línea 33): Variable o identificador 'otra_var_no_declarada' no definido.
+Error Semántico (Línea 33): Operador '+' no soportado entre INTEGER y ERROR_TYPE.
