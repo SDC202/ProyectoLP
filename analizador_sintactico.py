@@ -104,38 +104,13 @@ def p_exit_scope(p):
     symbol_table.exit_scope()
 
 def p_program(p):
-    '''
-    program : optional_newlines statements optional_newlines
-    '''
-    p[0] = p[2]
+    'program : statements'
+    pass
 
 def p_statements(p):
     '''
-    statements : statements statement_separator statement
-               | statement
+    statements : statements statement
                | empty
-    '''
-
-    if len(p) == 4:
-        p[0] = p[1] + [p[3]]
-    elif len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = []
-
-def p_statement_separator(p):
-    '''
-    statement_separator : NEWLINE
-                        | SEMICOLON
-                        | statement_separator NEWLINE
-                        | statement_separator SEMICOLON
-    '''
-    pass
-
-def p_optional_newlines(p):
-    '''
-    optional_newlines : statement_separator
-                      | empty
     '''
     pass
 
@@ -148,8 +123,9 @@ def p_statement(p):
               | function_definition
               | class_definition
               | return_statement
+              | SEMICOLON
     '''
-    p[0] = p[1]
+    pass
 
 def p_expression_literals(p):
     '''
@@ -266,8 +242,8 @@ def p_expression_unary(p):
 
 def p_class_definition(p):
     '''
-    class_definition : CLASS CONSTANT enter_scope statements optional_newlines exit_scope END
-                     | CLASS CONSTANT LESS CONSTANT enter_scope statements optional_newlines exit_scope END
+    class_definition : CLASS CONSTANT enter_scope statements exit_scope END
+                     | CLASS CONSTANT LESS CONSTANT enter_scope statements exit_scope END
     '''
     class_name = p[2]
     symbol_table.declare(class_name, 'CLASS', lineno=p.lineno(1))
@@ -294,7 +270,7 @@ def p_return_statement(p):
 # Definición de Funciones
 def p_function_definition(p):
     '''
-    function_definition : DEF func_name_hook func_header statements optional_newlines exit_scope END
+    function_definition : DEF func_name_hook func_header statements exit_scope END
     '''
     pass
 
@@ -402,7 +378,7 @@ def p_io_statement_puts(p):
 # Estructura de Control: for
 def p_control_statement_for(p):
     '''
-    control_statement : FOR for_setup statements optional_newlines exit_scope END
+    control_statement : FOR for_setup statements exit_scope END
     '''
     pass
 
@@ -419,22 +395,22 @@ def p_for_setup(p):
 # 1. Estructura de Control: if-elsif-else
 def p_control_statement_if(p):
     '''
-    control_statement : IF condition enter_scope statements optional_newlines exit_scope END
-                      | IF condition enter_scope statements optional_newlines exit_scope ELSE enter_scope statements optional_newlines exit_scope END
-                      | IF condition enter_scope statements elsif_clauses optional_newlines exit_scope END
-                      | IF condition enter_scope statements elsif_clauses ELSE enter_scope statements optional_newlines exit_scope END
+    control_statement : IF condition enter_scope statements exit_scope END
+                      | IF condition enter_scope statements exit_scope ELSE enter_scope statements exit_scope END
+                      | IF condition enter_scope statements elsif_clauses exit_scope END
+                      | IF condition enter_scope statements elsif_clauses ELSE enter_scope statements exit_scope END
     '''
     pass
 
 def p_elsif_clauses(p):
     '''
-    elsif_clauses : elsif_clauses ELSIF condition statements optional_newlines
-                  | ELSIF condition statements optional_newlines
+    elsif_clauses : elsif_clauses ELSIF condition statements
+                  | ELSIF condition statements
     '''
     
 # 2. Estructura de Control: while
 def p_control_statement_while(p):
-    'control_statement : WHILE condition enter_loop_scope statements optional_newlines exit_scope END'
+    'control_statement : WHILE condition enter_loop_scope statements exit_scope END'
     # Regla para: while x < 5 ... end
 
 # 6. Tipo de Función: Llamada a Función

@@ -1,0 +1,11 @@
+--- Log de Análisis Semántico ---
+Usuario: SDC202
+Archivo: algoritmos_prueba/pruebaparser_sDeCastro.rb
+Fecha: 17/11/2025 18:50:27
+------------------------------
+
+Errores Semánticos Encontrados:
+Error Semántico (Línea 11): Operador '+' no soportado entre UNKNOWN y UNKNOWN.
+Error Semántico (Línea 0): Variable 'func_con_params' ya declarada en este ámbito.
+Error Semántico (Línea 15): Variable o identificador 'b' no definido.
+Error Semántico (Línea 15): Operador '+' no soportado entre UNKNOWN y ERROR_TYPE.

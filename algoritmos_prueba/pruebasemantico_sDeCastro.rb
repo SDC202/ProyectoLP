@@ -24,12 +24,12 @@ def mi_funcion_scope
 end
 
 # Error: 'variable_local' no existe en este ámbito (global)
-puts variable_local
+puts variable_local;
 
 # --- Test Regla 1: Verificación de Declaración ---
 mi_var_declarada = 1
 
 # Error: 'otra_var_no_declarada' no ha sido definida
-calculo = mi_var_declarada + otra_var_no_declarada 
+calculo = mi_var_declarada + otra_var_no_declarada
 
 puts "Análisis terminado"
