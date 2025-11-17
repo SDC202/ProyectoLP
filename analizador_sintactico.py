@@ -305,20 +305,19 @@ def p_func_header(p):
     for param in param_list:
         symbol_table.declare(param, 'VARIABLE', data_type='UNKNOWN', lineno=p.lineno(1))
 
-
-# Estructura de Datos: Hash
 def p_expression_hash(p):
     '''
     expression : LBRACE hash_pairs RBRACE
                | LBRACE RBRACE
     '''
-    # Regla para: { llave => valor, :otra => 1 }
+    p[0] = 'HASH'
 
 def p_hash_pairs(p):
     '''
     hash_pairs : hash_pairs COMMA hash_pair
                | hash_pair
     '''
+    pass
 
 def p_hash_pair(p):
     '''
@@ -326,15 +325,61 @@ def p_hash_pair(p):
               | SYMBOL HASH_ROCKET expression
               | STRING HASH_ROCKET expression
     '''
+    pass
 
-# Ingreso de Datos
 def p_io_statement_gets(p):
     '''
     io_statement : IDENTIFIER ASSIGN GETS DOT IDENTIFIER
                  | IDENTIFIER ASSIGN GETS
     '''
-    # Regla para: nombre = gets.chomp
-    # Regla para: nombre = gets
+    var_name = p[1]
+    symbol_table.declare(var_name, 'VARIABLE', data_type='STRING', lineno=p.lineno(1))
+
+def p_condition(p):
+    '''
+    condition : expression EQUAL expression
+              | expression NOT_EQUAL expression
+              | expression GREATER expression
+              | expression LESS expression
+              | expression GREATER_EQUAL expression
+              | expression LESS_EQUAL expression
+              | expression SPACESHIP expression
+              | expression CASE_EQUAL expression
+              | condition LOGICAL_AND condition
+              | condition AND condition
+              | condition LOGICAL_OR condition
+              | condition OR condition
+              | LOGICAL_NOT condition
+              | NOT condition
+              | expression
+    '''
+    if len(p) == 4:
+        p[0] = symbol_table.check_types(p[2], p[1], p[3], p.lineno(2))
+    elif len(p) == 3:
+        p[0] = 'BOOLEAN'
+    else:
+        p[0] = p[1]
+
+def p_expression_array(p):
+    '''
+    expression : LBRACKET array_elements RBRACKET
+               | LBRACKET RBRACKET
+    '''
+    p[0] = 'ARRAY'
+
+def p_array_elements(p):
+    '''
+    array_elements : array_elements COMMA expression
+                   | expression
+    '''
+    pass
+
+def p_io_statement_puts(p):
+    '''
+    io_statement : PUTS expression
+                 | PUTS
+    '''
+    pass
 
 # Estructura de Control: for
 def p_control_statement_for(p):
@@ -342,10 +387,6 @@ def p_control_statement_for(p):
     control_statement : FOR IDENTIFIER IN expression statements END
     '''
     # Regla para: for i in (1..5) ... end
-
-# Termina aporte Sebastián De Castro
-
-# Empieza aporte Sebastián Manzanilla
 
 # 1. Estructura de Control: if-elsif-else
 def p_control_statement_if(p):
@@ -366,50 +407,6 @@ def p_elsif_clauses(p):
 def p_control_statement_while(p):
     'control_statement : WHILE condition statements END'
     # Regla para: while x < 5 ... end
-
-# 3. Condiciones Lógicas
-def p_condition(p):
-    '''
-    condition : expression EQUAL expression
-              | expression NOT_EQUAL expression
-              | expression GREATER expression
-              | expression LESS expression
-              | expression GREATER_EQUAL expression
-              | expression LESS_EQUAL expression
-              | expression SPACESHIP expression
-              | expression CASE_EQUAL expression
-              | condition LOGICAL_AND condition
-              | condition AND condition
-              | condition LOGICAL_OR condition
-              | condition OR condition
-              | LOGICAL_NOT condition
-              | NOT condition
-              | expression
-    '''
-    # Permite: x == 5, x > 2, !(x > 2), x > 2 && y < 1, etc.
-
-# 4. Estructura de Datos: Array
-def p_expression_array(p):
-    '''
-    expression : LBRACKET array_elements RBRACKET
-               | LBRACKET RBRACKET
-    '''
-    # Regla para: [1, "dos", 3]
-
-def p_array_elements(p):
-    '''
-    array_elements : array_elements COMMA expression
-                   | expression
-    '''
-
-# 5. Impresión
-def p_io_statement_puts(p):
-    '''
-    io_statement : PUTS expression
-                 | PUTS
-    '''
-    # Regla para: puts "Hola"
-    # Regla para: puts (sin argumentos)
 
 # 6. Tipo de Función: Llamada a Función
 def p_expression_function_call(p):
