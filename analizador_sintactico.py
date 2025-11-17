@@ -134,12 +134,17 @@ def p_expression_literals(p):
                | FLOAT
                | STRING
                | SYMBOL
-               | TRUE
-               | FALSE
-               | NIL
                | REGEXP
     '''
-    p[0] = p[1]
+    p[0] = p.slice[1].type
+
+def p_expression_booleans(p):
+    '''
+    expression : TRUE
+               | FALSE
+               | NIL
+    '''
+    p[0] = 'BOOLEAN'
 
 def p_expression_variables(p):
     '''
@@ -149,17 +154,37 @@ def p_expression_variables(p):
                | GLOBAL_VARIABLE
                | CONSTANT
     '''
-    p[0] = p[1]
+    name = p[1]
+    symbol = symbol_table.lookup(name)
+    
+    if symbol is None:
+        symbol_table.report_error(f"Variable o identificador '{name}' no definido.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif symbol['symbol_type'] != 'VARIABLE':
+        symbol_table.report_error(f"'{name}' no es una variable.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    else:
+        p[0] = symbol['data_type']
 
 def p_expression_range(p):
     '''
     expression : expression RANGE_INCLUSIVE expression
                | expression RANGE_EXCLUSIVE expression
     '''
-    pass
+    p[0] = 'RANGE'
 
 def p_expression_array_access(p):
     'expression : IDENTIFIER LBRACKET expression RBRACKET'
+    array_name = p[1]
+    symbol = symbol_table.lookup(array_name)
+    if symbol is None:
+        symbol_table.report_error(f"Array '{array_name}' no definido.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif symbol['data_type'] != 'ARRAY':
+        symbol_table.report_error(f"'{array_name}' no es un array.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    else:
+        p[0] = 'UNKNOWN'
 
 def p_expression_dot_call(p):
     '''
@@ -167,20 +192,8 @@ def p_expression_dot_call(p):
                | expression DOT IDENTIFIER LPAREN arguments RPAREN
                | expression DOT IDENTIFIER LPAREN RPAREN
     '''
+    p[0] = 'UNKNOWN'
 
-
-def p_error(p):
-    if p:
-        error_msg = f"Error de Sintaxis: Token inesperado '{p.value}' (Tipo: {p.type}) en la línea {p.lineno}"
-    else:
-        error_msg = "Error de Sintaxis: Final de archivo inesperado (EOF)"
-    
-    print(error_msg)
-    parser.errors.append(error_msg)
-
-# Empieza aporte Sebastián De Castro
-
-# Asignación de Variables
 def p_assignment(p):
     '''
     assignment : IDENTIFIER ASSIGN expression
@@ -191,13 +204,16 @@ def p_assignment(p):
                | CONSTANT ASSIGN expression
                | assignment_array ASSIGN expression
     '''
-
-    # Regla para: x = 5, @x = 5, @@x = 5, $x = 5, X = 5, mi_array[0] = 5
+    var_name = p[1]
+    expr_type = p[3]
+    
+    if isinstance(var_name, str):
+        symbol_table.declare(var_name, 'VARIABLE', data_type=expr_type, lineno=p.lineno(1))
 
 def p_assignment_array(p):
     'assignment_array : IDENTIFIER LBRACKET expression RBRACKET'
+    p[0] = (p[1], p[3])
 
-# Expresiones Aritméticas
 def p_expression_binop(p):
     '''
     expression : expression PLUS expression
@@ -207,7 +223,12 @@ def p_expression_binop(p):
                | expression MODULE_OP expression
                | expression POWER expression
     '''
-    p[0] = ('binop', p[2], p[1], p[3])
+    type1 = p[1]
+    op = p[2]
+    type2 = p[3]
+    
+    result_type = symbol_table.check_types(op, type1, type2, p.lineno(2))
+    p[0] = result_type
 
 def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
@@ -215,17 +236,28 @@ def p_expression_group(p):
 
 def p_expression_unary(p):
     "expression : MINUS expression %prec UMINUS"
-    p[0] = ('unary_minus', p[2])
+    if p[2] not in ['INTEGER', 'FLOAT']:
+        symbol_table.report_error(f"Operador '-' no soportado para {p[2]}.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    else:
+        p[0] = p[2]
 
-# Definición de Clases
 def p_class_definition(p):
     '''
-    class_definition : CLASS CONSTANT statements END
-                     | CLASS CONSTANT LESS CONSTANT statements END
+    class_definition : CLASS CONSTANT enter_scope statements exit_scope END
+                     | CLASS CONSTANT LESS CONSTANT enter_scope statements exit_scope END
     '''
+    class_name = p[2]
+    symbol_table.declare(class_name, 'CLASS', lineno=p.lineno(1))
 
-    # Regla para: class MiClase ... end
-    # Regla para: class Hija < Padre ... end
+def p_error(p):
+    if p:
+        error_msg = f"Error de Sintaxis: Token inesperado '{p.value}' (Tipo: {p.type}) en la línea {p.lineno}"
+    else:
+        error_msg = "Error de Sintaxis: Final de archivo inesperado (EOF)"
+    
+    print(error_msg)
+    parser.errors.append(error_msg)
 
 def p_params(p):
     '''
