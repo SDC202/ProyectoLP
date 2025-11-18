@@ -1,0 +1,14 @@
+--- Log de Análisis Semántico ---
+Usuario: ManzanillaSebastian
+Archivo: algoritmos_prueba/pruebasemantico_sManzanilla.rb
+Fecha: 18/11/2025 01:48:06
+------------------------------
+
+Errores Semánticos Encontrados:
+Error Semántico (Línea 18): 'MiClase' no es una variable.
+Error Semántico (Línea 18): Operador '+' no soportado entre INTEGER y ERROR_TYPE.
+Error Semántico (Línea 27): Operador '-' no soportado para STRING.
+Error Semántico (Línea 33): Función 'metodo_no_existente' no definida.
+Error Semántico (Línea 30): Función 'variable_no_existente' no definida.
+Error Semántico (Línea 36): Variable o identificador 'class_var' no definido.
+Error Semántico (Línea 39): 'array' no es una función, es VARIABLE.

@@ -164,12 +164,25 @@ def p_expression_variables(p):
         p[0] = 'ERROR_TYPE'
     else:
         p[0] = symbol['data_type']
-
 def p_expression_range(p):
     '''
     expression : expression RANGE_INCLUSIVE expression
                | expression RANGE_EXCLUSIVE expression
     '''
+    lineno = p.lineno(2) # Línea del operador de rango
+
+    required_types = ['INTEGER', 'FLOAT']
+    
+    if p[1] not in required_types or p[3] not in required_types:
+
+        symbol_table.report_error(
+            f"El rango permite operaciones entre {required_types}, pero se encontró {p[1]} y {p[3]}.",
+            lineno
+        )
+        p[0] = 'ERROR_TYPE'
+        return
+        
+    # Si ambos tipos son válidos (INTEGER), el resultado es un rango
     p[0] = 'RANGE'
 
 def p_expression_array_access(p):
@@ -191,7 +204,13 @@ def p_expression_dot_call(p):
                | expression DOT IDENTIFIER LPAREN arguments RPAREN
                | expression DOT IDENTIFIER LPAREN RPAREN
     '''
-    p[0] = 'UNKNOWN'
+    identifier_name = p[3]
+    symbol = symbol_table.lookup(identifier_name)
+    if symbol is None:
+        symbol_table.report_error(f"Propiedad '{identifier_name}' no definida para {p[1]}.", p.lineno(3))
+        p[0] = 'ERROR_TYPE'
+    else:
+        p[0] = 'UNKNOWN'
 
 def p_assignment(p):
     '''
@@ -210,7 +229,17 @@ def p_assignment(p):
 
 def p_assignment_array(p):
     'assignment_array : IDENTIFIER LBRACKET expression RBRACKET'
-    p[0] = (p[1], p[3])
+    
+    array_name = p[1]
+    symbol = symbol_table.lookup(array_name)
+    if symbol is None:
+        symbol_table.report_error(f"Array '{array_name}' no definido.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif symbol['data_type'] != 'ARRAY':
+        symbol_table.report_error(f"'{array_name}' no es un array.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    else:
+        p[0] = 'UNKNOWN'
 
 def p_expression_binop(p):
     '''
