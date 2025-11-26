@@ -1,0 +1,8 @@
+--- Log de Análisis Sintáctico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 01:44:50
+------------------------------
+
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '.' (Tipo: DOT) en la línea 4

@@ -5,33 +5,32 @@ keywords = {
     'if': 'IF',
     'else': 'ELSE',
     'elsif': 'ELSIF',
-    'unless': 'UNLESS',
+    'unless': 'UNLESS', #no incluido en el analizador sintactico
     'while': 'WHILE',
-    'until': 'UNTIL',
+    'until': 'UNTIL', #no incluido en el analizador sintactico
     'for': 'FOR',
     'in': 'IN',
-    'case': 'CASE',
-    'when': 'WHEN',
+    'case': 'CASE', #no incluido en el analizador sintactico
+    'when': 'WHEN', #no incluido en el analizador sintactico
     
     # Definiciones
     'def': 'DEF',
     'class': 'CLASS',
-    'module': 'MODULE',
+    'module': 'MODULE', #no incluido en el analizador sintactico
     'end': 'END',
     
     # Control de bucles y métodos
     'break': 'BREAK',
     'next': 'NEXT',
-    'return': 'RETURN',
-    'yield': 'YIELD',
-    'then': 'THEN',
+    'yield': 'YIELD', #no incluido en el analizador sintactico
+    'then': 'THEN', #no incluido en el analizador sintactico
 
     # Bloques y excepciones
-    'do': 'DO',
-    'begin': 'BEGIN',
-    'rescue': 'RESCUE',
-    'ensure': 'ENSURE',
-    'retry': 'RETRY',
+    'do': 'DO', #no incluido en el analizador sintactico
+    'begin': 'BEGIN', #no incluido en el analizador sintactico
+    'rescue': 'RESCUE', #no incluido en el analizador sintactico
+    'ensure': 'ENSURE', #no incluido en el analizador sintactico
+    'retry': 'RETRY', #no incluido en el analizador sintactico
     
     # Literales especiales (tratados como keywords) 
     'true': 'TRUE',
@@ -44,9 +43,9 @@ keywords = {
     'not': 'NOT',
 
     # Otros
-    'alias': 'ALIAS',
-    'self': 'SELF',
-    'super': 'SUPER',
+    'alias': 'ALIAS', #no incluido en el analizador sintactico
+    'self': 'SELF', #no incluido en el analizador sintactico
+    'super': 'SUPER', #no incluido en el analizador sintactico
     'puts': 'PUTS',
     'gets': 'GETS',
 }
@@ -78,12 +77,12 @@ tokens_operadores = (
 
     # Asignación 
     'ASSIGN',        # =
-    'PLUS_ASSIGN',   # +=
-    'MINUS_ASSIGN',  # -=
-    'TIMES_ASSIGN',  # *=
-    'DIVIDE_ASSIGN', # /=
-    'MOD_ASSIGN',    # %=
-    'POWER_ASSIGN',  # **=
+    'PLUS_ASSIGN',   # += #no incluido en el analizador sintactico
+    'MINUS_ASSIGN',  # -= #no incluido en el analizador sintactico
+    'TIMES_ASSIGN',  # *= #no incluido en el analizador sintactico
+    'DIVIDE_ASSIGN', # /= #no incluido en el analizador sintactico
+    'MOD_ASSIGN',    # %= #no incluido en el analizador sintactico
+    'POWER_ASSIGN',  # **= #no incluido en el analizador sintactico
     
     # Comparación 
     'EQUAL',         # ==
@@ -104,7 +103,7 @@ tokens_operadores = (
     'RANGE_INCLUSIVE', # ..
     'RANGE_EXCLUSIVE', # ...
     'HASH_ROCKET',     # => (para Hashes )
-    'SCOPE',           # ::
+    'SCOPE',           # :: #no incluido en el analizador sintactico
 )
 
 tokens_delimitadores = (

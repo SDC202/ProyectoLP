@@ -116,15 +116,15 @@ def p_statements(p):
 
 def p_statement(p):
     '''
-    statement : expression
-              | assignment
+    statement : assignment
               | io_statement
               | control_statement
               | function_definition
               | class_definition
-              | return_statement
               | SEMICOLON
     '''
+    #expression fue eliminado
+
     pass
 
 def p_expression_literals(p):
@@ -152,6 +152,7 @@ def p_expression_variables(p):
                | CLASS_VARIABLE
                | GLOBAL_VARIABLE
                | CONSTANT
+               | array_access
     '''
     name = p[1]
     symbol = symbol_table.lookup(name)
@@ -164,12 +165,13 @@ def p_expression_variables(p):
         p[0] = 'ERROR_TYPE'
     else:
         p[0] = symbol['data_type']
+
 def p_expression_range(p):
     '''
-    expression : expression RANGE_INCLUSIVE expression
-               | expression RANGE_EXCLUSIVE expression
+    expression : expression RANGE_EXCLUSIVE expression
+               | expression RANGE_INCLUSIVE expression
     '''
-    lineno = p.lineno(2) # Línea del operador de rango
+    lineno = p.lineno(2)
 
     required_types = ['INTEGER', 'FLOAT']
     
@@ -182,32 +184,32 @@ def p_expression_range(p):
         p[0] = 'ERROR_TYPE'
         return
         
-    # Si ambos tipos son válidos (INTEGER), el resultado es un rango
     p[0] = 'RANGE'
 
-def p_expression_array_access(p):
-    'expression : IDENTIFIER LBRACKET expression RBRACKET'
-    array_name = p[1]
-    symbol = symbol_table.lookup(array_name)
-    if symbol is None:
-        symbol_table.report_error(f"Array '{array_name}' no definido.", p.lineno(1))
-        p[0] = 'ERROR_TYPE'
-    elif symbol['data_type'] != 'ARRAY':
-        symbol_table.report_error(f"'{array_name}' no es un array.", p.lineno(1))
-        p[0] = 'ERROR_TYPE'
-    else:
-        p[0] = 'UNKNOWN'
+# def p_expression_array_access(p):
+    # 'expression : IDENTIFIER LBRACKET expression RBRACKET'
+
+    # array_name = p[1]
+    # symbol = symbol_table.lookup(array_name)
+
+    # if symbol is None:
+    #     symbol_table.report_error(f"Identificador '{array_name}' no definido.", p.lineno(1))
+    #     p[0] = 'ERROR_TYPE'
+    # elif symbol['data_type'] != 'ARRAY':
+    #     symbol_table.report_error(f"'{array_name}' no es un array.", p.lineno(1))
+    #     p[0] = 'ERROR_TYPE'
+    # else:
+    #     p[0] = 'UNKNOWN'
 
 def p_expression_dot_call(p):
     '''
-    expression : expression DOT IDENTIFIER
-               | expression DOT IDENTIFIER LPAREN arguments RPAREN
-               | expression DOT IDENTIFIER LPAREN RPAREN
+    expression : IDENTIFIER DOT IDENTIFIER
+               | IDENTIFIER DOT function_call
     '''
     identifier_name = p[3]
     symbol = symbol_table.lookup(identifier_name)
     if symbol is None:
-        symbol_table.report_error(f"Propiedad '{identifier_name}' no definida para {p[1]}.", p.lineno(3))
+        symbol_table.report_error(f"Propiedad '{identifier_name}' no definida.", p.lineno(3))
         p[0] = 'ERROR_TYPE'
     else:
         p[0] = 'UNKNOWN'
@@ -219,7 +221,7 @@ def p_assignment(p):
                | CLASS_VARIABLE ASSIGN expression
                | GLOBAL_VARIABLE ASSIGN expression
                | CONSTANT ASSIGN expression
-               | assignment_array ASSIGN expression
+               | array_access ASSIGN expression
     '''
     var_name = p[1]
     expr_type = p[3]
@@ -227,13 +229,13 @@ def p_assignment(p):
     if isinstance(var_name, str):
         symbol_table.declare(var_name, 'VARIABLE', data_type=expr_type, lineno=p.lineno(1))
 
-def p_assignment_array(p):
-    'assignment_array : IDENTIFIER LBRACKET expression RBRACKET'
+def p_array_access(p):
+    'array_access : IDENTIFIER LBRACKET expression RBRACKET'
     
     array_name = p[1]
     symbol = symbol_table.lookup(array_name)
     if symbol is None:
-        symbol_table.report_error(f"Array '{array_name}' no definido.", p.lineno(1))
+        symbol_table.report_error(f"Identificador '{array_name}' no definido.", p.lineno(1))
         p[0] = 'ERROR_TYPE'
     elif symbol['data_type'] != 'ARRAY':
         symbol_table.report_error(f"'{array_name}' no es un array.", p.lineno(1))
@@ -286,15 +288,6 @@ def p_param_list(p):
         p[0] = [p[1]] + p[3]
     else:
         p[0] = [p[1]]
-
-    # Regla para definir los parametros
-
-def p_return_statement(p):
-    '''
-    return_statement : RETURN expression
-                   | RETURN
-    '''
-    pass
 
 # Definición de Funciones
 def p_function_definition(p):
@@ -404,7 +397,6 @@ def p_io_statement_puts(p):
     '''
     pass
 
-# Estructura de Control: for
 def p_control_statement_for(p):
     '''
     control_statement : FOR for_setup statements exit_scope END
@@ -421,7 +413,6 @@ def p_for_setup(p):
     
     pass
 
-# 1. Estructura de Control: if-elsif-else
 def p_control_statement_if(p):
     '''
     control_statement : IF condition enter_scope statements exit_scope END
@@ -433,21 +424,21 @@ def p_control_statement_if(p):
 
 def p_elsif_clauses(p):
     '''
-    elsif_clauses : elsif_clauses ELSIF condition statements
+    elsif_clauses : ELSIF condition statements elsif_clauses
                   | ELSIF condition statements
     '''
     
-# 2. Estructura de Control: while
 def p_control_statement_while(p):
     'control_statement : WHILE condition enter_loop_scope statements exit_scope END'
-    # Regla para: while x < 5 ... end
 
-# 6. Tipo de Función: Llamada a Función
 def p_expression_function_call(p):
+    'expression : function_call'
+
+def p_function_call(p):
     '''
-    expression : IDENTIFIER LPAREN arguments RPAREN
-               | IDENTIFIER LPAREN RPAREN
-               | IDENTIFIER arguments
+    function_call : IDENTIFIER LPAREN arguments RPAREN
+                  | IDENTIFIER LPAREN RPAREN
+                  | IDENTIFIER arguments
     '''
     func_name = p[1]
     arg_list = []
@@ -461,7 +452,7 @@ def p_expression_function_call(p):
     symbol = symbol_table.lookup(func_name)
     
     if symbol is None:
-        symbol_table.report_error(f"Función '{func_name}' no definida.", p.lineno(1))
+        symbol_table.report_error(f"Identificador '{func_name}' no definida.", p.lineno(1))
         p[0] = 'ERROR_TYPE'
     elif symbol['symbol_type'] != 'FUNCTION':
         symbol_table.report_error(f"'{func_name}' no es una función, es {symbol['symbol_type']}.", p.lineno(1))
@@ -471,20 +462,16 @@ def p_expression_function_call(p):
         p[0] = 'ERROR_TYPE'
     else:
         p[0] = 'UNKNOWN'
-    # Regla para: mi_funcion(a, b)
-    # Regla para: mi_funcion a, b (sin paréntesis)
 
 def p_arguments(p):
     '''
-    arguments : arguments COMMA expression
+    arguments : arguments COMMA expression 
               | expression
     '''
     if len(p) == 4:
         p[0] = p[1] + [p[3]]
     else:
         p[0] = [p[1]]
-
-# Terminan aportes Sebastian Manzanilla
 
 def p_statement_break(p):
     'statement : BREAK'
@@ -500,7 +487,7 @@ def p_error(p):
     if p:
         error_msg = f"Error de Sintaxis: Token inesperado '{p.value}' (Tipo: {p.type}) en la línea {p.lineno}"
     else:
-        error_msg = "Error de Sintaxis: Final de archivo inesperado (EOF)"
+        error_msg = "Error de Sintaxis: Final de archivo inesperado (EOF). Es posible que haya un entorno indebidamente delimitado"
     
     print(error_msg)
     parser.errors.append(error_msg)

@@ -1,0 +1,8 @@
+--- Log de Análisis Sintáctico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 00:01:27
+------------------------------
+
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Final de archivo inesperado (EOF)

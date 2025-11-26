@@ -1,0 +1,8 @@
+--- Log de Análisis Semántico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 01:41:43
+------------------------------
+
+Errores Semánticos Encontrados:
+Error Semántico (Línea 4): Identificador 'miFuncion' no definida para BOOLEAN.

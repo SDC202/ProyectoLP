@@ -1,0 +1,8 @@
+--- Log de Análisis Semántico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 00:20:49
+------------------------------
+
+Errores Semánticos Encontrados:
+Error Semántico (Línea 6): El rango permite operaciones entre ['INTEGER', 'FLOAT'], pero se encontró STRING y INTEGER.

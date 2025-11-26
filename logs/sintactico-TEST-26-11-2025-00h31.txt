@@ -1,0 +1,8 @@
+--- Log de Análisis Sintáctico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 00:31:26
+------------------------------
+
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '9' (Tipo: STRING) en la línea 6

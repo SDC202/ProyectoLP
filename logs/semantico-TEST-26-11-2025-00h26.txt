@@ -1,0 +1,8 @@
+--- Log de Análisis Semántico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 00:26:11
+------------------------------
+
+Errores Semánticos Encontrados:
+Error Semántico (Línea 6): Variable 'b' ya declarada en este ámbito.

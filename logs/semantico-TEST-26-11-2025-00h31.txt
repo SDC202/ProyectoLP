@@ -1,0 +1,11 @@
+--- Log de Análisis Semántico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 00:31:34
+------------------------------
+
+Análisis Semántico Exitoso: No se encontraron errores semánticos.
+
+------------------------------
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '9' (Tipo: STRING) en la línea 6

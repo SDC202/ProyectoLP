@@ -1,0 +1,28 @@
+--- Log de Análisis Léxico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 00:25:20
+------------------------------
+
+Tokens Reconocidos:
+Token: DEF, Valor: 'def', Línea: 2
+Token: IDENTIFIER, Valor: 'miFuncion', Línea: 2
+Token: LPAREN, Valor: '(', Línea: 2
+Token: RPAREN, Valor: ')', Línea: 2
+Token: IDENTIFIER, Valor: 'b', Línea: 3
+Token: ASSIGN, Valor: '=', Línea: 3
+Token: INTEGER, Valor: '8', Línea: 3
+Token: END, Valor: 'end', Línea: 4
+Token: IDENTIFIER, Valor: 'i', Línea: 6
+Token: ASSIGN, Valor: '=', Línea: 6
+Token: STRING, Valor: 'a', Línea: 6
+Token: WHILE, Valor: 'while', Línea: 8
+Token: TRUE, Valor: 'true', Línea: 8
+Token: IDENTIFIER, Valor: 'a', Línea: 9
+Token: ASSIGN, Valor: '=', Línea: 9
+Token: IDENTIFIER, Valor: 'miFuncion', Línea: 9
+Token: LPAREN, Valor: '(', Línea: 9
+Token: RPAREN, Valor: ')', Línea: 9
+Token: END, Valor: 'end', Línea: 10
+Token: PUTS, Valor: 'puts', Línea: 12
+Token: STRING, Valor: 'terminado', Línea: 12

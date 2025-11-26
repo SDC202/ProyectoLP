@@ -1,0 +1,11 @@
+--- Log de Análisis Semántico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 26/11/2025 01:44:56
+------------------------------
+
+Análisis Semántico Exitoso: No se encontraron errores semánticos.
+
+------------------------------
+Errores Sintácticos Encontrados:
+Error de Sintaxis: Token inesperado '.' (Tipo: DOT) en la línea 4
