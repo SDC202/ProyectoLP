@@ -1,0 +1,15 @@
+--- Log de Análisis Léxico ---
+Usuario: TEST
+Archivo: algoritmos_prueba/test.rb
+Fecha: 27/11/2025 19:15:55
+------------------------------
+
+Tokens Reconocidos:
+Token: IDENTIFIER, Valor: 'i', Línea: 2
+Token: ASSIGN, Valor: '=', Línea: 2
+Token: INTEGER, Valor: '0', Línea: 2
+Token: IDENTIFIER, Valor: 'a', Línea: 4
+Token: ASSIGN, Valor: '=', Línea: 4
+Token: INTEGER, Valor: '9', Línea: 4
+Token: DOT, Valor: '.', Línea: 4
+Token: IDENTIFIER, Valor: 'i', Línea: 4
