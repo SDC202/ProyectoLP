@@ -140,6 +140,7 @@ def p_expression_literals(p):
                | STRING
                | SYMBOL
                | REGEXP
+               | range
     '''
     p[0] = p.slice[1].type
 
@@ -165,22 +166,25 @@ def p_expression_variables(p):
     symbol = symbol_table.lookup(name)
     
     if symbol is None:
-        symbol_table.report_error(f"Variable o identificador '{name}' no definido.", p.lineno(1))
-        p[0] = 'ERROR_TYPE'
+        if p.lineno(1) != 0:
+            symbol_table.report_error(f"Variable o identificador '{name}' no definido.", p.lineno(1))
+            p[0] = 'ERROR_TYPE'
     elif symbol['symbol_type'] != 'VARIABLE':
         symbol_table.report_error(f"'{name}' no es una variable.", p.lineno(1))
         p[0] = 'ERROR_TYPE'
     else:
         p[0] = symbol['data_type']
 
-def p_expression_range(p):
+def p_range(p):
     '''
-    expression : expression RANGE_EXCLUSIVE expression
+    range : expression RANGE_EXCLUSIVE expression
                | expression RANGE_INCLUSIVE expression
     '''
     lineno = p.lineno(2)
 
     required_types = ['INTEGER', 'FLOAT']
+
+    print(p[1])
     
     if p[1] not in required_types or p[3] not in required_types:
 
@@ -192,21 +196,6 @@ def p_expression_range(p):
         return
         
     p[0] = 'RANGE'
-
-# def p_expression_array_access(p):
-    # 'expression : IDENTIFIER LBRACKET expression RBRACKET'
-
-    # array_name = p[1]
-    # symbol = symbol_table.lookup(array_name)
-
-    # if symbol is None:
-    #     symbol_table.report_error(f"Identificador '{array_name}' no definido.", p.lineno(1))
-    #     p[0] = 'ERROR_TYPE'
-    # elif symbol['data_type'] != 'ARRAY':
-    #     symbol_table.report_error(f"'{array_name}' no es un array.", p.lineno(1))
-    #     p[0] = 'ERROR_TYPE'
-    # else:
-    #     p[0] = 'UNKNOWN'
 
 def p_expression_dot_call(p):
     '''
@@ -220,6 +209,20 @@ def p_expression_dot_call(p):
         p[0] = 'ERROR_TYPE'
     else:
         p[0] = 'UNKNOWN'
+
+def p_expression_array(p):
+    '''
+    expression : LBRACKET array_elements RBRACKET
+               | LBRACKET RBRACKET
+    '''
+    p[0] = 'ARRAY'
+
+def p_array_elements(p):
+    '''
+    array_elements : array_elements COMMA expression
+                   | expression
+    '''
+    pass
 
 def p_special_assignment(p):
     '''
@@ -305,6 +308,49 @@ def p_expression_binop(p):
 def p_expression_group(p):
     'expression : LPAREN expression RPAREN'
     p[0] = p[2]
+
+def p_expression_function_call(p):
+    'expression : function_call'
+
+def p_function_call(p):
+    '''
+    function_call : IDENTIFIER LPAREN arguments RPAREN
+                  | IDENTIFIER LPAREN RPAREN
+                  | IDENTIFIER arguments
+    '''
+    func_name = p[1]
+    arg_list = []
+
+    if len(p) == 5:
+        arg_list = p[3]
+    elif len(p) == 3:
+        arg_list = p[2]
+
+    num_args = len(arg_list)
+    symbol = symbol_table.lookup(func_name)
+
+    if symbol is None:
+        symbol_table.report_error(f"Función '{func_name}' no definida.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif symbol['symbol_type'] != 'FUNCTION':
+        symbol_table.report_error(f"'{func_name}' no es una función, es {symbol['symbol_type']}.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif symbol['param_count'] != num_args:
+        symbol_table.report_error(
+            f"Función '{func_name}' esperaba {symbol['param_count']} argumentos, pero recibió {num_args}.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    else:
+        p[0] = 'UNKNOWN'
+
+def p_arguments(p):
+    '''
+    arguments : arguments COMMA expression
+              | expression
+    '''
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    else:
+        p[0] = [p[1]]
 
 def p_expression_unary(p):
     "expression : MINUS expression %prec UMINUS"
@@ -438,20 +484,6 @@ def p_condition(p):
     else:
         p[0] = p[1]
 
-def p_expression_array(p):
-    '''
-    expression : LBRACKET array_elements RBRACKET
-               | LBRACKET RBRACKET
-    '''
-    p[0] = 'ARRAY'
-
-def p_array_elements(p):
-    '''
-    array_elements : array_elements COMMA expression
-                   | expression
-    '''
-    pass
-
 def p_control_statement_for(p):
     '''
     control_statement : FOR for_setup statements exit_scope END
@@ -485,48 +517,6 @@ def p_elsif_clauses(p):
     
 def p_control_statement_while(p):
     'control_statement : WHILE condition enter_loop_scope statements exit_scope END'
-
-def p_expression_function_call(p):
-    'expression : function_call'
-
-def p_function_call(p):
-    '''
-    function_call : IDENTIFIER LPAREN arguments RPAREN
-                  | IDENTIFIER LPAREN RPAREN
-                  | IDENTIFIER arguments
-    '''
-    func_name = p[1]
-    arg_list = []
-    
-    if len(p) == 5:
-        arg_list = p[3]
-    elif len(p) == 3:
-        arg_list = p[2]
-    
-    num_args = len(arg_list)
-    symbol = symbol_table.lookup(func_name)
-    
-    if symbol is None:
-        symbol_table.report_error(f"Identificador '{func_name}' no definida.", p.lineno(1))
-        p[0] = 'ERROR_TYPE'
-    elif symbol['symbol_type'] != 'FUNCTION':
-        symbol_table.report_error(f"'{func_name}' no es una función, es {symbol['symbol_type']}.", p.lineno(1))
-        p[0] = 'ERROR_TYPE'
-    elif symbol['param_count'] != num_args:
-        symbol_table.report_error(f"Función '{func_name}' esperaba {symbol['param_count']} argumentos, pero recibió {num_args}.", p.lineno(1))
-        p[0] = 'ERROR_TYPE'
-    else:
-        p[0] = 'UNKNOWN'
-
-def p_arguments(p):
-    '''
-    arguments : arguments COMMA expression 
-              | expression
-    '''
-    if len(p) == 4:
-        p[0] = p[1] + [p[3]]
-    else:
-        p[0] = [p[1]]
 
 def p_statement_break(p):
     'statement : BREAK'

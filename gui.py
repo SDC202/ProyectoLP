@@ -25,13 +25,35 @@ class GUI:
 
         root.config(menu=menu_bar)
 
-        # Área de texto principal (Input)
-        # Label
-        tk.Label(root, text="Código Fuente Ruby:", font=("Arial", 12, "bold")).pack(pady=5, anchor="w", padx=10)
+        # Crear Frame contenedor para el código, los números Y la barra de scroll
+        code_frame = tk.Frame(root)
+        code_frame.pack(fill=tk.BOTH, expand=True, padx=10)
 
-        # Área de texto con scroll
-        self.input_text = scrolledtext.ScrolledText(root, height=15, font=("Consolas", 10))
-        self.input_text.pack(fill=tk.BOTH, expand=True, padx=10)
+        # Barra de Scroll Vertical (¡Nueva!)
+        scrollbar = tk.Scrollbar(code_frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Área de texto para los números de línea (sin cambios)
+        self.linenumbers = tk.Text(code_frame, width=4, padx=5, bd=0,
+                                   bg="#f0f0f0", state='disabled',
+                                   font=("Consolas", 10))
+        self.linenumbers.pack(side=tk.LEFT, fill=tk.Y)
+
+        # Área de texto con scroll (Input)
+        self.input_text = tk.Text(code_frame, height=15, font=("Consolas", 10))
+        self.input_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Conexión de la barra de scroll a ambos widgets (llama a yview_sync)
+        scrollbar.config(command=self.yview_sync)
+        self.input_text.config(yscrollcommand=scrollbar.set)
+        self.linenumbers.config(yscrollcommand=scrollbar.set)
+
+        # Enlaces de eventos para la actualización de números (¡Windows OK!)
+        self.input_text.bind('<KeyRelease>', self.update_line_numbers)
+        self.input_text.bind('<MouseWheel>', self.update_line_numbers)
+
+        # 5. Llamar a la actualización inicial
+        self.update_line_numbers()
 
         # Botón de "Analizar"
         self.analyze_button = tk.Button(root, text="ANALIZAR CÓDIGO",
@@ -52,6 +74,42 @@ class GUI:
         self.output_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
 
     # Métodos
+    def yview_sync(self, *args):
+        """Método llamado por la barra de scroll para mover ambos widgets."""
+
+        # La barra de scroll pasa argumentos válidos ('moveto', '0.0', etc.)
+        self.input_text.yview(*args)
+        self.linenumbers.yview(*args)
+
+        # Llamar al generador de números después del scroll
+        self.update_line_numbers()
+
+    def update_line_numbers(self, event=None):
+        # 1. Deshabilitar y Limpiar
+        self.linenumbers.config(state='normal')
+        self.linenumbers.delete("1.0", tk.END)
+
+        # 2. Generar Números
+        # Obtener el número total de líneas de código (usando 'end-1c' para evitar línea vacía final)
+        total_lines = int(self.input_text.index('end-1c').split('.')[0])
+
+        line_num_string = ""
+        # Generar la cadena de números (padding opcional para alineación)
+        for i in range(1, total_lines + 1):
+            line_num_string += f"{i}\n"
+
+        self.linenumbers.insert("1.0", line_num_string)
+
+        # 3. SINCRONIZACIÓN VERTICAL (¡El paso clave!)
+        # Obtener la fracción de desplazamiento actual del área de código.
+        # yview() devuelve una tupla (fracción_superior, fracción_inferior), queremos el primer elemento.
+        scroll_fraction = self.input_text.yview()[0]
+
+        # Mover el widget de números a esa misma fracción de desplazamiento.
+        self.linenumbers.yview_moveto(scroll_fraction)
+
+        # 4. Volver a deshabilitar
+        self.linenumbers.config(state='disabled')
 
     # Lógica de Archivos
     def cargar_archivo(self):
