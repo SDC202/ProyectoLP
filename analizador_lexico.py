@@ -20,6 +20,7 @@ keywords = {
     'end': 'END',
     
     # Control de bucles y métodos
+    'return': 'RETURN',
     'break': 'BREAK',
     'next': 'NEXT',
     'yield': 'YIELD', #no incluido en el analizador sintactico
@@ -189,7 +190,6 @@ t_RBRACKET  = r'\]'
 t_LBRACE    = r'\{'
 t_RBRACE    = r'\}'
 t_COMMA     = r','
-# t_DOT       = r'\.'
 t_SEMICOLON = r';'
 
 # Termina aporte Sebastián De Castro

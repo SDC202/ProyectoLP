@@ -7,8 +7,8 @@ class SymbolTable:
         self.enter_scope()
         self.errors = []
 
-    def enter_scope(self, is_loop=False):
-        new_scope = {'__is_loop__': is_loop}
+    def enter_scope(self, is_loop=False, is_function=False):
+        new_scope = {'__is_loop__': is_loop, '__is_function__': is_function}
         self.scope_stack.append(new_scope)
 
     def exit_scope(self):
@@ -38,6 +38,12 @@ class SymbolTable:
     def check_loop(self):
         for scope in reversed(self.scope_stack):
             if scope.get('__is_loop__', False):
+                return True
+        return False
+
+    def check_function(self):
+        for scope in reversed(self.scope_stack):
+            if scope.get('__is_function__', False):
                 return True
         return False
 
@@ -120,11 +126,10 @@ def p_statement(p):
               | io_statement
               | control_statement
               | function_definition
+              | return_statement
               | class_definition
               | SEMICOLON
     '''
-    #expression fue eliminado
-
     pass
 
 def p_expression_literals(p):
@@ -142,6 +147,7 @@ def p_expression_booleans(p):
     expression : TRUE
                | FALSE
                | NIL
+               | condition
     '''
     p[0] = 'BOOLEAN'
 
@@ -306,7 +312,8 @@ def p_func_header(p):
                 | LPAREN RPAREN
                 | empty
     '''
-    func_name = p[-1] 
+    func_name = p[-1]
+    print(func_name)
     param_list = []
     
     if len(p) == 4:
@@ -314,12 +321,23 @@ def p_func_header(p):
     
     symbol_table.declare(func_name, 'FUNCTION', param_count=len(param_list), lineno=p.lineno(0))
     
-    symbol_table.enter_scope()
+    symbol_table.enter_scope(is_function=True)
     
     for param in param_list:
         symbol_table.declare(param, 'VARIABLE', data_type='UNKNOWN', lineno=p.lineno(0))
     
     p[0] = param_list
+
+def p_return_statement(p):
+    '''
+    return_statement : RETURN expression
+                     | RETURN
+    '''
+
+    if not symbol_table.check_function():
+        symbol_table.report_error("'return' no puede usarse fuera de una definición de función.", p.lineno(1))
+
+    pass
 
 def p_expression_hash(p):
     '''
@@ -342,6 +360,13 @@ def p_hash_pair(p):
               | STRING HASH_ROCKET expression
     '''
     pass
+
+def p_io_statement_puts(p):
+    '''
+    io_statement : PUTS expression
+                 | PUTS
+    '''
+    p[0] = "PUTS"
 
 def p_io_statement_gets(p):
     '''
@@ -387,13 +412,6 @@ def p_array_elements(p):
     '''
     array_elements : array_elements COMMA expression
                    | expression
-    '''
-    pass
-
-def p_io_statement_puts(p):
-    '''
-    io_statement : PUTS expression
-                 | PUTS
     '''
     pass
 
