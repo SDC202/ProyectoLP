@@ -123,6 +123,7 @@ def p_statements(p):
 def p_statement(p):
     '''
     statement : assignment
+              | special_assignment
               | io_statement
               | control_statement
               | function_definition
@@ -219,6 +220,42 @@ def p_expression_dot_call(p):
         p[0] = 'ERROR_TYPE'
     else:
         p[0] = 'UNKNOWN'
+
+def p_special_assignment(p):
+    '''
+    special_assignment : IDENTIFIER PLUS_ASSIGN expression
+                       | IDENTIFIER MINUS_ASSIGN expression
+                       | IDENTIFIER TIMES_ASSIGN expression
+                       | IDENTIFIER DIVIDE_ASSIGN expression
+                       | IDENTIFIER MOD_ASSIGN expression
+                       | IDENTIFIER POWER_ASSIGN expression
+    '''
+
+    var_name = p[1]
+    symbol = symbol_table.lookup(var_name)
+
+    if symbol is None:
+        symbol_table.report_error(f"Identificador '{var_name}' no definido.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+        return
+
+    var_type = symbol['data_type']
+    op = p[2]
+    expr_type = p[3]
+    numeric_types = ['INTEGER', 'FLOAT']
+
+    if var_type not in numeric_types:
+        symbol_table.report_error(f"La asignación especial '{op}' solo es permitida para variables INTEGER o FLOAT. '{var_name}' es {var_type}.", p.lineno(1))
+        p[0] = 'ERROR_TYPE'
+    elif expr_type not in numeric_types:
+        symbol_table.report_error(f"La expresión asignada a '{op}' debe ser INTEGER o FLOAT, pero se encontró {expr_type}.", p.lineno(3))
+        p[0] = 'ERROR_TYPE'
+    else:
+        if expr_type == 'FLOAT' and var_type == 'INTEGER':
+            symbol['data_type'] = 'FLOAT'
+            p[0] = 'FLOAT'
+        else:
+            p[0] = var_type
 
 def p_assignment(p):
     '''
